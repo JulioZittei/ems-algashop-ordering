@@ -6,6 +6,14 @@ public class ErrorMessages {
 
     public static final String VALIDATION_ERROR_MESSAGE_NULL_VALUE = "value cannot be null.";
     public static final String VALIDATION_ERROR_MESSAGE_BLANK_VALUE = "value cannot be blank.";
+    public static final String VALIDATION_ERROR_MESSAGE_NULL_ADDRESS = "address cannot be null.";
+    public static final String VALIDATION_ERROR_MESSAGE_BLANK_STREET = "street is required.";
+    public static final String VALIDATION_ERROR_MESSAGE_BLANK_NUMBER = "number is required.";
+    public static final String VALIDATION_ERROR_MESSAGE_BLANK_NEIGHBORHOOD = "neighborhood is required.";
+    public static final String VALIDATION_ERROR_MESSAGE_BLANK_CITY = "city is required.";
+    public static final String VALIDATION_ERROR_MESSAGE_BLANK_STATE = "city is required.";
+    public static final String VALIDATION_ERROR_MESSAGE_BLANK_ZIPCODE = "zipCode is required.";
+    public static final String VALIDATION_ERROR_MESSAGE_CHARACTERS_VALUE = "value must be exactly {size} characters in length.";
     public static final String VALIDATION_ERROR_MESSAGE_INVALID_EMAIL = "email is not valid.";
     public static final String VALIDATION_ERROR_MESSAGE_NULL_EMAIL = "email cannot be null.";
     public static final String VALIDATION_ERROR_MESSAGE_NULL_PHONE = "phone cannot be null.";
