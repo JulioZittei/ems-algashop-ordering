@@ -58,7 +58,7 @@ public class OrderItem {
     }
 
     private void calculateTotalAmount() {
-        setTotalAmount(calculateTotalAmount(this.price, this.quantity));
+        setTotalAmount(calculateTotalAmount(price(), quantity()));
     }
 
     private void setId(OrderItemId id) {
