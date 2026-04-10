@@ -9,7 +9,7 @@ public class OrderInvalidShippingDeliveryDateException extends DomainException {
         super(message);
     }
 
-    public OrderInvalidShippingDeliveryDateException(OrderId id) {
-        super(String.format(ERROR_ORDER_DELIVERY_CANNOT_BE_IN_THE_PAST, id));
+    public OrderInvalidShippingDeliveryDateException(OrderId orderId) {
+        super(String.format(ERROR_ORDER_DELIVERY_CANNOT_BE_IN_THE_PAST, orderId));
     }
 }

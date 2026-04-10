@@ -61,6 +61,13 @@ public class OrderItem {
         setTotalAmount(calculateTotalAmount(price(), quantity()));
     }
 
+    void changeQuantity(Quantity quantity) {
+        Objects.requireNonNull(quantity);
+
+        setQuantity(quantity);
+        calculateTotalAmount();
+    }
+
     private void setId(OrderItemId id) {
         Objects.requireNonNull(id);
         this.id = id;
@@ -135,4 +142,5 @@ public class OrderItem {
     public int hashCode() {
         return Objects.hashCode(id);
     }
+
 }

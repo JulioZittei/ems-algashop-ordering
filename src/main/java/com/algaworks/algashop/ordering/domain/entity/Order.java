@@ -2,10 +2,12 @@ package com.algaworks.algashop.ordering.domain.entity;
 
 import com.algaworks.algashop.ordering.domain.exception.OrderCannotBePlacedException;
 import com.algaworks.algashop.ordering.domain.exception.OrderInvalidShippingDeliveryDateException;
+import com.algaworks.algashop.ordering.domain.exception.OrderDoesNotContainOrderItemException;
 import com.algaworks.algashop.ordering.domain.exception.OrderStatusCannotBeChangedException;
 import com.algaworks.algashop.ordering.domain.valueobject.*;
 import com.algaworks.algashop.ordering.domain.valueobject.id.CustomerId;
 import com.algaworks.algashop.ordering.domain.valueobject.id.OrderId;
+import com.algaworks.algashop.ordering.domain.valueobject.id.OrderItemId;
 import com.algaworks.algashop.ordering.domain.valueobject.id.ProductId;
 import lombok.Builder;
 
@@ -102,20 +104,19 @@ public class Order {
         recalculateTotals();
     }
 
+    public void changeItemQuantity(OrderItemId orderItemId, Quantity quantity) {
+        Objects.requireNonNull(orderItemId);
+        Objects.requireNonNull(quantity);
+
+        OrderItem orderItem = findOrderItem(orderItemId);
+        orderItem.changeQuantity(quantity);
+        recalculateTotals();
+    }
+
     public void markAsPlaced() {
-        Objects.requireNonNull(shipping());
-        Objects.requireNonNull(billing());
-        Objects.requireNonNull(expectedDeliveryDate());
-        Objects.requireNonNull(shippingCost());
-        Objects.requireNonNull(paymentMethod());
-        Objects.requireNonNull(items());
-
-        if (this.items.isEmpty()) {
-            throw new OrderCannotBePlacedException(id());
-        }
-
-        this.setPlacedAt(OffsetDateTime.now());
-        this.changeStatus(OrderStatus.PLACED);
+        verifyIfCanChangeToPlaced();
+        setPlacedAt(OffsetDateTime.now());
+        changeStatus(OrderStatus.PLACED);
     }
 
     public void markAsPaid() {
@@ -197,6 +198,41 @@ public class Order {
         var orderTotalAmount = totalItemsAmount.add(orderShippingCost);
         setTotalAmount(new Money(orderTotalAmount));
         setTotalItems(new Quantity(totalItemsQuantity));
+    }
+
+    private OrderItem findOrderItem(OrderItemId orderItemId) {
+        Objects.requireNonNull(orderItemId);
+
+        return items.stream()
+                .filter(i -> i.id().equals(orderItemId))
+                .findFirst()
+                .orElseThrow(() -> new OrderDoesNotContainOrderItemException(id(), orderItemId));
+    }
+
+    private void verifyIfCanChangeToPlaced() {
+        if (Objects.isNull(shipping())) {
+            throw OrderCannotBePlacedException.hasNoShippingInfo(id());
+        }
+
+        if (Objects.isNull(billing())) {
+            throw OrderCannotBePlacedException.hasNoBillingInfo(id());
+        }
+
+        if (Objects.isNull(shippingCost())) {
+            throw OrderCannotBePlacedException.hasNoShippingCost(id());
+        }
+
+        if (Objects.isNull(expectedDeliveryDate())) {
+            throw OrderCannotBePlacedException.hasNoExpectedDeliveryDate(id());
+        }
+
+        if (Objects.isNull(paymentMethod())) {
+            throw OrderCannotBePlacedException.hasNoPaymentMethod(id());
+        }
+
+        if (items.isEmpty()) {
+            throw OrderCannotBePlacedException.hasNoItems(id());
+        }
     }
 
     private void changeStatus(OrderStatus newStatus) {

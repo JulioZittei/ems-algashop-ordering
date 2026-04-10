@@ -10,7 +10,7 @@ public class OrderStatusCannotBeChangedException extends DomainException {
         super(message);
     }
 
-    public OrderStatusCannotBeChangedException(OrderId id, OrderStatus from, OrderStatus to) {
-        super(String.format(ERROR_ORDER_STATUS_CANNOT_BE_CHANGE, id, from, to));
+    public OrderStatusCannotBeChangedException(OrderId orderId, OrderStatus from, OrderStatus to) {
+        super(String.format(ERROR_ORDER_STATUS_CANNOT_BE_CHANGE, orderId, from, to));
     }
 }

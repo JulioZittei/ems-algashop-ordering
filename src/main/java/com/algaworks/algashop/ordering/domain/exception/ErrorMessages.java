@@ -35,5 +35,11 @@ public class ErrorMessages {
     public static final String ERROR_MESSAGE_CUSTOMER_ARCHIVED = "customer is archived and it cannot be changed.";
     public static final String ERROR_ORDER_STATUS_CANNOT_BE_CHANGE = "status in an order '%s' cannot change from '%s' to '%s'.";
     public static final String ERROR_ORDER_DELIVERY_CANNOT_BE_IN_THE_PAST = "expected delivery date in order '%s' cannot be in the past.";
-    public static final String ERROR_ORDER_CANNOT_BE_PLACED = "items in order '%s' cannot be empty for the order to be placed.";
+    public static final String ERROR_ORDER_HAS_NO_ITEMS_CANNOT_BE_PLACED = "items in order '%s' cannot be empty for the order to be placed.";
+    public static final String ERROR_ORDER_HAS_NO_SHIPPING_INFO_CANNOT_BE_PLACED = "shipping info in order '%s' cannot be null for the order to be placed.";
+    public static final String ERROR_ORDER_HAS_NO_BILLING_INFO_CANNOT_BE_PLACED = "billing info in order '%s' cannot be null for the order to be placed.";
+    public static final String ERROR_ORDER_HAS_NO_SHIPPING_COST_CANNOT_BE_PLACED = "shipping cost in order '%s' cannot be null for the order to be placed.";
+    public static final String ERROR_ORDER_HAS_NO_EXPECTED_DELIVERY_DATE_CANNOT_BE_PLACED = "expected delivery date in order '%s' cannot be null for the order to be placed.";
+    public static final String ERROR_ORDER_HAS_NO_PAYMENT_METHOD_CANNOT_BE_PLACED = "expected delivery date in order '%s' cannot be null for the order to be placed.";
+    public static final String ERROR_ORDER_DOES_NOT_CONTAIN_ORDER_ITEM = "order '%s' does not contain order item '%s'.";
 }
