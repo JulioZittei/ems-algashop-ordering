@@ -1,13 +1,16 @@
 package com.algaworks.algashop.ordering.domain.entity;
 
+import com.algaworks.algashop.ordering.domain.exception.OrderCannotBePlacedException;
 import com.algaworks.algashop.ordering.domain.exception.OrderInvalidShippingDeliveryDateException;
 import com.algaworks.algashop.ordering.domain.exception.OrderStatusCannotBeChangedException;
 import com.algaworks.algashop.ordering.domain.valueobject.*;
 import com.algaworks.algashop.ordering.domain.valueobject.id.CustomerId;
+import com.algaworks.algashop.ordering.domain.valueobject.id.OrderItemId;
 import com.algaworks.algashop.ordering.domain.valueobject.id.ProductId;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Set;
@@ -275,10 +278,32 @@ class OrderTest {
     void givingDraftOrderAndRequiredFieldsNotFilled_WhenMarkAsPlaced_shouldGenerateAnException() {
         Order order = Order.draft(new CustomerId());
 
-        Assertions.assertThatExceptionOfType(NullPointerException.class)
+        Assertions.assertThatExceptionOfType(OrderCannotBePlacedException.class)
                         .isThrownBy(order::markAsPlaced);
 
         Assertions.assertThat(order.isPlaced()).isFalse();
         Assertions.assertThat(order.canceledAt()).isNull();
+    }
+
+    @Test
+    void givenDraftOrder_whenChangeItemQuantity_shouldAllowChange() {
+        Order order = Order.draft(new CustomerId());
+
+        order.addItem(
+                new ProductId(),
+                new ProductName("Notebook X11"),
+                new Money("3000.00"),
+                new Quantity(2));
+
+        OrderItem orderItem = order.items().iterator().next();
+        OrderItemId orderItemId = orderItem.id();
+        Quantity newQuantity = new Quantity(orderItem.quantity().value() + 1);
+        Money newTotalAmount = new Money(orderItem.price().value().multiply(BigDecimal.valueOf(newQuantity.value())));
+
+        order.changeItemQuantity(orderItemId, newQuantity);
+
+        Assertions.assertThat(order.items().iterator().next().quantity()).isEqualTo(newQuantity);
+        Assertions.assertThat(order.items().iterator().next().totalAmount()).isEqualTo(newTotalAmount);
+        Assertions.assertThat(order.totalItems()).isEqualTo(newQuantity);
     }
 }
