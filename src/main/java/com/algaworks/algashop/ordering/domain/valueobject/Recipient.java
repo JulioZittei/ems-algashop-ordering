@@ -5,26 +5,18 @@ import lombok.Builder;
 
 import java.util.Objects;
 
-import static com.algaworks.algashop.ordering.domain.exception.ErrorMessages.*;
+import static com.algaworks.algashop.ordering.domain.exception.ErrorMessages.VALIDATION_ERROR_MESSAGE_NULL_DOCUMENT;
+import static com.algaworks.algashop.ordering.domain.exception.ErrorMessages.VALIDATION_ERROR_MESSAGE_NULL_PHONE;
 
-public record BillingInfo(
+@Builder
+public record Recipient(
         FullName fullName,
         Document document,
-        Phone phone,
-        Address address
+        Phone phone
 ) {
-
-    @Builder(toBuilder = true)
-    public BillingInfo(FullName fullName, Document document, Phone phone, Address address) {
+    public Recipient {
         Objects.requireNonNull(fullName, ErrorMessages.VALIDATION_ERROR_MESSAGE_NULL_FULLNAME);
         Objects.requireNonNull(document, VALIDATION_ERROR_MESSAGE_NULL_DOCUMENT);
         Objects.requireNonNull(phone, VALIDATION_ERROR_MESSAGE_NULL_PHONE);
-        Objects.requireNonNull(address, VALIDATION_ERROR_MESSAGE_NULL_ADDRESS);
-
-        this.fullName = fullName;
-        this.document = document;
-        this.phone = phone;
-        this.address = address;
     }
-
 }
