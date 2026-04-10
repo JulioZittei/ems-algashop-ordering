@@ -38,8 +38,12 @@ public class ErrorMessages {
     public static final String ERROR_ORDER_HAS_NO_ITEMS_CANNOT_BE_PLACED = "items in order '%s' cannot be empty for the order to be placed.";
     public static final String ERROR_ORDER_HAS_NO_SHIPPING_INFO_CANNOT_BE_PLACED = "shipping info in order '%s' cannot be null for the order to be placed.";
     public static final String ERROR_ORDER_HAS_NO_BILLING_INFO_CANNOT_BE_PLACED = "billing info in order '%s' cannot be null for the order to be placed.";
-    public static final String ERROR_ORDER_HAS_NO_SHIPPING_COST_CANNOT_BE_PLACED = "shipping cost in order '%s' cannot be null for the order to be placed.";
-    public static final String ERROR_ORDER_HAS_NO_EXPECTED_DELIVERY_DATE_CANNOT_BE_PLACED = "expected delivery date in order '%s' cannot be null for the order to be placed.";
     public static final String ERROR_ORDER_HAS_NO_PAYMENT_METHOD_CANNOT_BE_PLACED = "expected delivery date in order '%s' cannot be null for the order to be placed.";
     public static final String ERROR_ORDER_DOES_NOT_CONTAIN_ORDER_ITEM = "order '%s' does not contain order item '%s'.";
+    public static final String ERROR_PRODUCT_IS_OUT_OF_STOCK = "product '%s' is out of stock.";
+    public static final String ERROR_ORDER_CANNOT_BE_EDITED = "order '%s' on status '%s' cannot be edited.";
+    public static final String ERROR_SHOPPING_CART_DOES_NOT_CONTAIN_ITEM = "shopping cart '%s' does not contain item '%s'";
+    public static final String ERROR_SHOPPING_CART_DOES_NOT_CONTAIN_PRODUCT = "shopping cart '%s' does not contain product %s";
+    public static final String ERROR_SHOPPING_CART_ITEM_INCOMPATIBLE_PRODUCT = "shopping cart '%s' cannot be updated, incompatible product '%s'";
+
 }

@@ -22,14 +22,6 @@ public class OrderCannotBePlacedException extends DomainException {
         return new OrderCannotBePlacedException(String.format(ERROR_ORDER_HAS_NO_BILLING_INFO_CANNOT_BE_PLACED,orderId));
     }
 
-    public static OrderCannotBePlacedException hasNoShippingCost(OrderId orderId) {
-        return new OrderCannotBePlacedException(String.format(ERROR_ORDER_HAS_NO_SHIPPING_COST_CANNOT_BE_PLACED,orderId));
-    }
-
-    public static OrderCannotBePlacedException hasNoExpectedDeliveryDate(OrderId orderId) {
-        return new OrderCannotBePlacedException(String.format(ERROR_ORDER_HAS_NO_EXPECTED_DELIVERY_DATE_CANNOT_BE_PLACED,orderId));
-    }
-
     public static OrderCannotBePlacedException hasNoPaymentMethod(OrderId orderId) {
         return new OrderCannotBePlacedException(String.format(ERROR_ORDER_HAS_NO_PAYMENT_METHOD_CANNOT_BE_PLACED,orderId));
     }
