@@ -45,5 +45,7 @@ public class ErrorMessages {
     public static final String ERROR_SHOPPING_CART_DOES_NOT_CONTAIN_ITEM = "shopping cart '%s' does not contain item '%s'";
     public static final String ERROR_SHOPPING_CART_DOES_NOT_CONTAIN_PRODUCT = "shopping cart '%s' does not contain product %s";
     public static final String ERROR_SHOPPING_CART_ITEM_INCOMPATIBLE_PRODUCT = "shopping cart '%s' cannot be updated, incompatible product '%s'";
+    public static final String ERROR_ORDER_NOT_BELONGS_TO_CUSTOMER = "order '%s' does not belong to the customer '%s'";
+    public static final String ERROR_CAN_NOT_ADD_LOYALTY_POINTS_ORDER_IS_NOT_READY = "can not add loyalty points. order '%s' is not ready";
 
 }
