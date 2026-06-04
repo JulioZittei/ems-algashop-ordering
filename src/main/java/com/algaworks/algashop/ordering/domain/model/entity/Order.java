@@ -10,10 +10,7 @@ import lombok.Builder;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class Order implements AggregateRoot<OrderId>{
 
@@ -36,10 +33,12 @@ public class Order implements AggregateRoot<OrderId>{
 
     private Set<OrderItem> items;
 
+    private Long version;
+
     @Builder(builderClassName = "ExistingOrderBuilder", builderMethodName = "existing")
     public Order(OrderId id, CustomerId customerId, Money totalAmount, Quantity totalItems, OffsetDateTime placedAt,
                  OffsetDateTime paidAt, OffsetDateTime canceledAt, OffsetDateTime readyAt, Billing billing,
-                 Shipping shipping, OrderStatus status, PaymentMethod paymentMethod, Set<OrderItem> items) {
+                 Shipping shipping, OrderStatus status, PaymentMethod paymentMethod, Set<OrderItem> items, Long version) {
         setId(id);
         setCustomerId(customerId);
         setTotalAmount(totalAmount);
@@ -53,6 +52,7 @@ public class Order implements AggregateRoot<OrderId>{
         setStatus(status);
         setPaymentMethod(paymentMethod);
         setItems(items);
+        setVersion(version);
     }
 
     public static Order draft(CustomerId customerId) {
@@ -69,7 +69,8 @@ public class Order implements AggregateRoot<OrderId>{
                 null,
                 OrderStatus.DRAFT,
                 null,
-                new HashSet<>()
+                new HashSet<>(),
+                null
         );
     }
 
@@ -116,8 +117,8 @@ public class Order implements AggregateRoot<OrderId>{
 
     public void markAsPlaced() {
         verifyIfCanChangeToPlaced();
-        setPlacedAt(OffsetDateTime.now());
         changeStatus(OrderStatus.PLACED);
+        setPlacedAt(OffsetDateTime.now());
     }
 
     public void markAsPaid() {
@@ -300,6 +301,10 @@ public class Order implements AggregateRoot<OrderId>{
         this.items = items;
     }
 
+    void setVersion(Long version) {
+        this.version = version;
+    }
+
     public OrderId id() {
         return id;
     }
@@ -340,6 +345,161 @@ public class Order implements AggregateRoot<OrderId>{
         return shipping;
     }
 
+    public FullName billingFullName() {
+        return Optional.ofNullable(billing)
+                .map(Billing::fullName)
+                .orElse(null);
+    }
+
+    public Document billingDocument() {
+        return Optional.ofNullable(billing)
+                .map(Billing::document)
+                .orElse(null);
+    }
+
+    public Phone billingPhone() {
+        return Optional.ofNullable(billing)
+                .map(Billing::phone)
+                .orElse(null);
+    }
+
+    public Email billingEmail() {
+        return Optional.ofNullable(billing)
+                .map(Billing::email)
+                .orElse(null);
+    }
+
+    public String billingAddressStreet() {
+        return Optional.ofNullable(billing)
+                .map(Billing::address)
+                .map(Address::street)
+                .orElse(null);
+    }
+
+    public String billingAddressNumber() {
+        return Optional.ofNullable(billing)
+                .map(Billing::address)
+                .map(Address::number)
+                .orElse(null);
+    }
+
+    public String billingAddressComplement() {
+        return Optional.ofNullable(billing)
+                .map(Billing::address)
+                .map(Address::complement)
+                .orElse(null);
+    }
+
+    public String billingAddressNeighborhood() {
+        return Optional.ofNullable(billing)
+                .map(Billing::address)
+                .map(Address::neighborhood)
+                .orElse(null);
+    }
+
+    public String billingAddressCity() {
+        return Optional.ofNullable(billing)
+                .map(Billing::address)
+                .map(Address::city)
+                .orElse(null);
+    }
+
+    public String billingAddressState() {
+        return Optional.ofNullable(billing)
+                .map(Billing::address)
+                .map(Address::state)
+                .orElse(null);
+    }
+
+    public ZipCode billingAddressZipCode() {
+        return Optional.ofNullable(billing)
+                .map(Billing::address)
+                .map(Address::zipCode)
+                .orElse(null);
+    }
+
+    public Money shippingCost() {
+        return Optional.ofNullable(shipping)
+                .map(Shipping::cost)
+                .orElse(null);
+    }
+
+    public LocalDate shippingExpectedDate() {
+        return Optional.ofNullable(shipping)
+                .map(Shipping::expectedDate)
+                .orElse(null);
+    }
+
+    public FullName shippingRecipientFullName() {
+        return Optional.ofNullable(shipping)
+                .map(Shipping::recipient)
+                .map(Recipient::fullName)
+                .orElse(null);
+    }
+
+    public Document shippingRecipientDocument() {
+        return Optional.ofNullable(shipping)
+                .map(Shipping::recipient)
+                .map(Recipient::document)
+                .orElse(null);
+    }
+
+    public Phone shippingRecipientPhone() {
+        return Optional.ofNullable(shipping)
+                .map(Shipping::recipient)
+                .map(Recipient::phone)
+                .orElse(null);
+    }
+
+    public String shippingAddressStreet() {
+        return Optional.ofNullable(shipping)
+                .map(Shipping::address)
+                .map(Address::street)
+                .orElse(null);
+    }
+
+    public String shippingAddressNumber() {
+        return Optional.ofNullable(shipping)
+                .map(Shipping::address)
+                .map(Address::number)
+                .orElse(null);
+    }
+
+    public String shippingAddressComplement() {
+        return Optional.ofNullable(shipping)
+                .map(Shipping::address)
+                .map(Address::complement)
+                .orElse(null);
+    }
+
+    public String shippingAddressNeighborhood() {
+        return Optional.ofNullable(shipping)
+                .map(Shipping::address)
+                .map(Address::neighborhood)
+                .orElse(null);
+    }
+
+    public String shippingAddressCity() {
+        return Optional.ofNullable(shipping)
+                .map(Shipping::address)
+                .map(Address::city)
+                .orElse(null);
+    }
+
+    public String shippingAddressState() {
+        return Optional.ofNullable(shipping)
+                .map(Shipping::address)
+                .map(Address::state)
+                .orElse(null);
+    }
+
+    public ZipCode shippingAddressZipCode() {
+        return Optional.ofNullable(shipping)
+                .map(Shipping::address)
+                .map(Address::zipCode)
+                .orElse(null);
+    }
+
     public OrderStatus status() {
         return status;
     }
@@ -351,6 +511,11 @@ public class Order implements AggregateRoot<OrderId>{
     public Set<OrderItem> items() {
         return Collections.unmodifiableSet(items);
     }
+
+    public Long version() {
+        return version;
+    }
+
 
     @Override
     public boolean equals(Object o) {

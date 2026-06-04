@@ -8,6 +8,7 @@ import lombok.Builder;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.algaworks.algashop.ordering.domain.model.exception.ErrorMessages.*;
@@ -26,6 +27,7 @@ public class Customer implements AggregateRoot<CustomerId>{
     private OffsetDateTime archivedAt;
     private LoyaltyPoints loyaltyPoints;
     private Address address;
+    private Long version;
 
     @Builder(builderClassName = "BrandNewCustomerBuilder", builderMethodName = "brandNew")
     private static Customer createBrandNew(CustomerId id, FullName fullName, BirthDate birthDate, Email email, Phone phone,
@@ -42,13 +44,14 @@ public class Customer implements AggregateRoot<CustomerId>{
                 registeredAt,
                 null,
                 LoyaltyPoints.ZERO,
-                address);
+                address,
+                null);
     }
 
     @Builder(builderClassName = "ExistingCustomerBuilder", builderMethodName = "existing")
     private Customer(CustomerId id, FullName fullName, BirthDate birthDate, Email email, Phone phone, Document document,
                     Boolean promotionNotificationsAllowed, Boolean archived, OffsetDateTime registeredAt,
-                    OffsetDateTime archivedAt, LoyaltyPoints loyaltyPoints, Address address) {
+                    OffsetDateTime archivedAt, LoyaltyPoints loyaltyPoints, Address address, Long version) {
         setId(id);
         setFullName(fullName);
         setBirthDate(birthDate);
@@ -61,6 +64,7 @@ public class Customer implements AggregateRoot<CustomerId>{
         setArchivedAt(archivedAt);
         setLoyaltyPoints(loyaltyPoints);
         setAddress(address);
+        setVersion(version);
     }
 
     public void addLoyaltyPoints(final LoyaltyPoints loyaltyPoints) {
@@ -167,6 +171,52 @@ public class Customer implements AggregateRoot<CustomerId>{
         return address;
     }
 
+    public String addressStreet() {
+        return Optional.ofNullable(address)
+                .map(Address::street)
+                .orElse(null);
+    }
+
+    public String addressNumber() {
+        return Optional.ofNullable(address)
+                .map(Address::number)
+                .orElse(null);
+    }
+
+    public String addressComplement() {
+        return Optional.ofNullable(address)
+                .map(Address::complement)
+                .orElse(null);
+    }
+
+    public String addressNeighborhood() {
+        return Optional.ofNullable(address)
+                .map(Address::neighborhood)
+                .orElse(null);
+    }
+
+    public String addressCity() {
+        return Optional.ofNullable(address)
+                .map(Address::city)
+                .orElse(null);
+    }
+
+    public String addressState() {
+        return Optional.ofNullable(address)
+                .map(Address::state)
+                .orElse(null);
+    }
+
+    public ZipCode addressZipCode() {
+        return Optional.ofNullable(address)
+                .map(Address::zipCode)
+                .orElse(null);
+    }
+
+    public Long version() {
+        return version;
+    }
+
     private void setFullName(FullName fullName) {
         Objects.requireNonNull(fullName, ErrorMessages.VALIDATION_ERROR_MESSAGE_NULL_FULLNAME);
         this.fullName = fullName;
@@ -222,6 +272,10 @@ public class Customer implements AggregateRoot<CustomerId>{
     private void setAddress(Address address) {
         Objects.requireNonNull(address, VALIDATION_ERROR_MESSAGE_NULL_ADDRESS);
         this.address = address;
+    }
+
+    void setVersion(Long version) {
+        this.version = version;
     }
 
     private void verifyIfIsChangeable() {
