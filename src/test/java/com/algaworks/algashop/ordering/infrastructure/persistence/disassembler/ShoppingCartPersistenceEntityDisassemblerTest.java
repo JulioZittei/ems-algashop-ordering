@@ -1,8 +1,6 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence.disassembler;
 
 import com.algaworks.algashop.ordering.domain.model.entity.ShoppingCart;
-import com.algaworks.algashop.ordering.domain.model.entity.ShoppingCartItem;
-import com.algaworks.algashop.ordering.infrastructure.persistence.entity.ShoppingCartItemPersistenceEntity;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.ShoppingCartPersistenceEntity;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.ShoppingCartPersistenceEntityTestDataBuilder;
 import org.assertj.core.api.Assertions;
@@ -46,36 +44,38 @@ class ShoppingCartPersistenceEntityDisassemblerTest {
         Assertions.assertThat(shoppingCart.items())
                 .hasSize(persistenceEntity.getItems().size());
 
-        ShoppingCartItem item =
-                shoppingCart.items().iterator().next();
+        shoppingCart.items().forEach(item -> {
+            var itemPersistence = persistenceEntity.getItems().stream()
+                    .filter(entityItem -> item.id().value().equals(entityItem.getId()))
+                    .findFirst()
+                    .orElse(null);
 
-        ShoppingCartItemPersistenceEntity itemPersistence =
-                persistenceEntity.getItems().iterator().next();
+            assertThat(item.id().value())
+                    .isEqualTo(itemPersistence.getId());
 
-        assertThat(item.id().value())
-                .isEqualTo(itemPersistence.getId());
+            assertThat(item.shoppingCartId().value())
+                    .isEqualTo(itemPersistence.getShoppingCartId());
 
-        assertThat(item.shoppingCartId().value())
-                .isEqualTo(itemPersistence.getShoppingCartId());
+            assertThat(item.productId().value())
+                    .isEqualTo(itemPersistence.getProductId());
 
-        assertThat(item.productId().value())
-                .isEqualTo(itemPersistence.getProductId());
+            assertThat(item.name().value())
+                    .isEqualTo(itemPersistence.getName());
 
-        assertThat(item.name().value())
-                .isEqualTo(itemPersistence.getName());
+            assertThat(item.price().value())
+                    .isEqualTo(itemPersistence.getPrice());
 
-        assertThat(item.price().value())
-                .isEqualTo(itemPersistence.getPrice());
+            assertThat(item.quantity().value())
+                    .isEqualTo(itemPersistence.getQuantity());
 
-        assertThat(item.quantity().value())
-                .isEqualTo(itemPersistence.getQuantity());
+            assertThat(item.isAvailable())
+                    .isEqualTo(itemPersistence.getAvailable());
 
-        assertThat(item.isAvailable())
-                .isEqualTo(itemPersistence.getAvailable());
-
-        assertThat(item.totalAmount().value())
-                .isEqualTo(itemPersistence.getTotalAmount());
+            assertThat(item.totalAmount().value())
+                    .isEqualTo(itemPersistence.getTotalAmount());
+        });
     }
+
 
     @Test
     void shouldConvertShoppingCartWithoutItems() {
