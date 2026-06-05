@@ -14,14 +14,12 @@ public class CustomerTestDataBuilder {
 
     public static Customer.BrandNewCustomerBuilder brandNew() {
         return Customer.brandNew()
-                .id(new CustomerId())
                 .fullName(new FullName("John", "Doe"))
                 .birthDate(new BirthDate(LocalDate.of(1991, 7, 5)))
                 .email(new Email("john.doe@gmail.com"))
                 .phone(new Phone("478-256-2504"))
                 .document(new Document("255-08-0578"))
                 .promotionNotificationsAllowed(false)
-                .registeredAt(OffsetDateTime.now())
                 .address(Address.builder()
                         .street("Rua das Acacias")
                         .number("250")

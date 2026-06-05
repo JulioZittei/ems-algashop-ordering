@@ -30,10 +30,9 @@ public class Customer implements AggregateRoot<CustomerId>{
     private Long version;
 
     @Builder(builderClassName = "BrandNewCustomerBuilder", builderMethodName = "brandNew")
-    private static Customer createBrandNew(CustomerId id, FullName fullName, BirthDate birthDate, Email email, Phone phone,
-                                          Document document, Boolean promotionNotificationsAllowed,
-                                          OffsetDateTime registeredAt, Address address) {
-        return new Customer(id,
+    private static Customer createBrandNew(FullName fullName, BirthDate birthDate, Email email, Phone phone,
+                                          Document document, Boolean promotionNotificationsAllowed, Address address) {
+        return new Customer(new CustomerId(),
                 fullName,
                 birthDate,
                 email,
@@ -41,7 +40,7 @@ public class Customer implements AggregateRoot<CustomerId>{
                 document,
                 promotionNotificationsAllowed,
                 false,
-                registeredAt,
+                OffsetDateTime.now(),
                 null,
                 LoyaltyPoints.ZERO,
                 address,
