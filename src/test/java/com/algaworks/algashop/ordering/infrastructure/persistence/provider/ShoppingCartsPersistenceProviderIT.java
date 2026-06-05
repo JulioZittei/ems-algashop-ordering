@@ -1,6 +1,9 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence.provider;
 
-import com.algaworks.algashop.ordering.domain.model.entity.*;
+import com.algaworks.algashop.ordering.domain.model.entity.Customer;
+import com.algaworks.algashop.ordering.domain.model.entity.CustomerTestDataBuilder;
+import com.algaworks.algashop.ordering.domain.model.entity.ShoppingCart;
+import com.algaworks.algashop.ordering.domain.model.entity.ShoppingCartTestDataBuilder;
 import com.algaworks.algashop.ordering.domain.model.valueobject.id.CustomerId;
 import com.algaworks.algashop.ordering.infrastructure.config.beans.VersionSynchronizerConfig;
 import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.CustomerPersistenceEntityAssembler;
@@ -30,7 +33,6 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
         CustomerPersistenceEntityAssembler.class,
         CustomerPersistenceEntityDisassembler.class,
         SpringDataAuditingConfig.class,
-        SpringDataAuditingConfig.class,
         HibernateConfig.class,
         VersionSynchronizerConfig.class
 })
@@ -50,7 +52,7 @@ class ShoppingCartsPersistenceProviderIT {
     }
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         if (!customersPersistenceProvider.exists(CustomerTestDataBuilder.DEFAULT_CUSTOMER_ID)) {
             customersPersistenceProvider.add(
                     CustomerTestDataBuilder.existingCustomer().build()
@@ -59,7 +61,7 @@ class ShoppingCartsPersistenceProviderIT {
     }
 
     @Test
-    public void shouldAddAndFindShoppingCart() {
+    void shouldAddAndFindShoppingCart() {
         ShoppingCart shoppingCart = ShoppingCartTestDataBuilder.aShoppingCart().build();
         assertThat(shoppingCart.version()).isNull();
 
@@ -74,7 +76,7 @@ class ShoppingCartsPersistenceProviderIT {
     }
 
     @Test
-    public void shouldRemoveShoppingCartById() {
+    void shouldRemoveShoppingCartById() {
         ShoppingCart shoppingCart = ShoppingCartTestDataBuilder.aShoppingCart().build();
         persistenceProvider.add(shoppingCart);
         assertThat(persistenceProvider.exists(shoppingCart.id())).isTrue();
@@ -86,7 +88,7 @@ class ShoppingCartsPersistenceProviderIT {
     }
 
     @Test
-    public void shouldRemoveShoppingCartByEntity() {
+    void shouldRemoveShoppingCartByEntity() {
         ShoppingCart shoppingCart = ShoppingCartTestDataBuilder.aShoppingCart().build();
         persistenceProvider.add(shoppingCart);
         assertThat(persistenceProvider.exists(shoppingCart.id())).isTrue();
@@ -97,7 +99,7 @@ class ShoppingCartsPersistenceProviderIT {
     }
 
     @Test
-    public void shouldFindShoppingCartByCustomerId() {
+    void shouldFindShoppingCartByCustomerId() {
         ShoppingCart shoppingCart = ShoppingCartTestDataBuilder.aShoppingCart()
                 .customerId(CustomerTestDataBuilder.DEFAULT_CUSTOMER_ID)
                 .build();
@@ -111,7 +113,7 @@ class ShoppingCartsPersistenceProviderIT {
     }
 
     @Test
-    public void shouldCorrectlyCountShoppingCarts() {
+    void shouldCorrectlyCountShoppingCarts() {
         long initialCount = persistenceProvider.count();
 
         ShoppingCart cart1 = ShoppingCartTestDataBuilder.aShoppingCart().build();
@@ -130,7 +132,7 @@ class ShoppingCartsPersistenceProviderIT {
 
     @Test
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public void shouldAddAndFindWhenNoTransaction() {
+    void shouldAddAndFindWhenNoTransaction() {
         ShoppingCart shoppingCart = ShoppingCartTestDataBuilder.aShoppingCart().build();
 
         persistenceProvider.add(shoppingCart);
