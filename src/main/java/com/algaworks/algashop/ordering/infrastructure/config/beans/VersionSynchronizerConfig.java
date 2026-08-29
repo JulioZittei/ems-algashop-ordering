@@ -1,8 +1,8 @@
 package com.algaworks.algashop.ordering.infrastructure.config.beans;
 
-import com.algaworks.algashop.ordering.domain.model.entity.CustomerVersionSynchronizer;
-import com.algaworks.algashop.ordering.domain.model.entity.OrderVersionSynchronizer;
-import com.algaworks.algashop.ordering.domain.model.entity.ShoppingCartVersionSynchronizer;
+import com.algaworks.algashop.ordering.domain.model.customer.CustomerVersionSynchronizer;
+import com.algaworks.algashop.ordering.domain.model.order.OrderVersionSynchronizer;
+import com.algaworks.algashop.ordering.domain.model.shoppingcart.ShoppingCartVersionSynchronizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

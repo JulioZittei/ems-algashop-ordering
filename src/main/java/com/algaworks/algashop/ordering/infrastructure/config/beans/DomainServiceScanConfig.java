@@ -1,6 +1,6 @@
 package com.algaworks.algashop.ordering.infrastructure.config.beans;
 
-import com.algaworks.algashop.ordering.domain.model.utility.annotation.DomainService;
+import com.algaworks.algashop.ordering.domain.model.DomainService;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
