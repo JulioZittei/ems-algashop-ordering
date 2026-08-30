@@ -1,0 +1,96 @@
+package com.algaworks.algashop.ordering.infrastructure.persistence.order;
+
+import com.algaworks.algashop.ordering.domain.model.customer.CustomerTestDataBuilder;
+import com.algaworks.algashop.ordering.domain.model.order.Order;
+import com.algaworks.algashop.ordering.domain.model.order.OrderStatus;
+import com.algaworks.algashop.ordering.domain.model.order.OrderTestDataBuilder;
+import com.algaworks.algashop.ordering.infrastructure.beans.VersionSynchronizerConfig;
+import com.algaworks.algashop.ordering.infrastructure.persistence.customer.CustomerPersistenceEntityAssembler;
+import com.algaworks.algashop.ordering.infrastructure.persistence.customer.CustomersPersistenceProvider;
+import com.algaworks.algashop.ordering.infrastructure.persistence.HibernateConfig;
+import com.algaworks.algashop.ordering.infrastructure.persistence.SpringDataAuditingConfig;
+import com.algaworks.algashop.ordering.infrastructure.persistence.customer.CustomerPersistenceEntityDisassembler;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
+@DataJpaTest
+@Import({
+        OrdersPersistenceProvider.class,
+        CustomersPersistenceProvider.class,
+        OrderPersistenceEntityAssembler.class,
+        CustomerPersistenceEntityAssembler.class,
+        CustomerPersistenceEntityDisassembler.class,
+        OrderPersistenceEntityDisassembler.class,
+        SpringDataAuditingConfig.class,
+        HibernateConfig.class,
+        VersionSynchronizerConfig.class
+})
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+class OrdersPersistenceProviderIT {
+
+    private final OrdersPersistenceProvider persistenceProvider;
+    private final CustomersPersistenceProvider customersPersistenceProvider;
+    private final OrderPersistenceEntityRepository persistenceEntityRepository;
+
+    @Autowired
+    public OrdersPersistenceProviderIT(OrdersPersistenceProvider persistenceProvider,
+                                       CustomersPersistenceProvider customersPersistenceProvider,
+                                       OrderPersistenceEntityRepository persistenceEntityRepository) {
+        this.persistenceProvider = persistenceProvider;
+        this.customersPersistenceProvider = customersPersistenceProvider;
+        this.persistenceEntityRepository = persistenceEntityRepository;
+    }
+
+    @BeforeEach
+    void setup() {
+        if(!customersPersistenceProvider.exists(CustomerTestDataBuilder.DEFAULT_CUSTOMER_ID)) {
+            customersPersistenceProvider.add(CustomerTestDataBuilder.existingArchived().build());
+        }
+    }
+
+    @Test
+    void shouldUpdateAndKeepPersistenceEntityState() {
+        Order order = OrderTestDataBuilder.anOrder()
+                .status(OrderStatus.PLACED)
+                .build();
+
+        long orderId = order.id().value().toLong();
+
+        persistenceProvider.add(order);
+        OrderPersistenceEntity persistenceEntity = persistenceEntityRepository.findById(orderId).orElseThrow();
+
+        assertThat(persistenceEntity.getStatus()).isEqualTo(OrderStatus.PLACED.name());
+        assertThat(persistenceEntity.getCreatedByUserId()).isNotNull();
+        assertThat(persistenceEntity.getLastModifiedAt()).isNotNull();
+        assertThat(persistenceEntity.getLasModifiedByUserId()).isNotNull();
+
+        order = persistenceProvider.ofId(order.id()).orElseThrow();
+        order.markAsPaid();
+        persistenceProvider.add(order);
+        persistenceEntity = persistenceEntityRepository.findById(orderId).orElseThrow();
+
+        assertThat(persistenceEntity.getStatus()).isEqualTo(OrderStatus.PAID.name());
+        assertThat(persistenceEntity.getCreatedByUserId()).isNotNull();
+        assertThat(persistenceEntity.getLastModifiedAt()).isNotNull();
+        assertThat(persistenceEntity.getLasModifiedByUserId()).isNotNull();
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    void shouldAddFindAndNotFail_whenHasNoTransaction() {
+        Order order = OrderTestDataBuilder.anOrder().build();
+
+        persistenceProvider.add(order);
+        Order savedOrder = persistenceProvider.ofId(order.id()).orElseThrow();
+
+        assertThat(savedOrder).isNotNull();
+    }
+}

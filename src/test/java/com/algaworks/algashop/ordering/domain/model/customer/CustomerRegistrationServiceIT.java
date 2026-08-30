@@ -5,10 +5,12 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
 
 @SpringBootTest
+@Sql(statements = { "DELETE FROM order_item", "DELETE FROM \"order\"","DELETE FROM \"customer\"" }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 class CustomerRegistrationServiceIT {
 
     @Autowired
