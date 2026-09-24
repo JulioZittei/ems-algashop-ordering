@@ -6,7 +6,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -14,7 +14,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-@Sql(statements = { "DELETE FROM order_item", "DELETE FROM \"order\"","DELETE FROM \"customer\"" }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Transactional
 class CustomerManagementApplicationServiceIT {
 
     @Autowired
@@ -90,6 +90,36 @@ class CustomerManagementApplicationServiceIT {
         Assertions.assertThat(customerOutput.getAddress().getCity()).isEqualTo(input.getAddressCity());
         Assertions.assertThat(customerOutput.getAddress().getState()).isEqualTo(input.getAddressState());
         Assertions.assertThat(customerOutput.getAddress().getZipCode()).isEqualTo(input.getAddressZipCode());
+    }
+
+    @Test
+    void shouldUpdate() {
+        CustomerInput input = CustomerInputTestDataBuilder.aCustomer().build();
+        CustomerUpdateInput updateInput = CustomerUpdateInputTestDataBuilder.aCustomerUpdate().build();
+
+        UUID customerId = customerManagementApplicationService.create(input);
+        Assertions.assertThat(customerId).isNotNull();
+
+        customerManagementApplicationService.update(customerId, updateInput);
+
+        CustomerOutput customerOutput = customerManagementApplicationService.findById(customerId);
+
+        Assertions.assertThat(customerOutput)
+                .extracting(
+                        CustomerOutput::getId,
+                        CustomerOutput::getFirstName,
+                        CustomerOutput::getLastName,
+                        CustomerOutput::getEmail,
+                        CustomerOutput::getBirthDate
+                ).containsExactly(
+                        customerId,
+                        updateInput.getFirstName(),
+                        updateInput.getLastName(),
+                        updateInput.getEmail(),
+                        input.getBirthDate()
+                );
+
+        Assertions.assertThat(customerOutput.getRegisteredAt()).isNotNull();
     }
 
     @Test

@@ -5,7 +5,7 @@ import com.algaworks.algashop.ordering.domain.model.FieldValidations;
 public record Email(String value) {
 
     public Email(String value) {
-        FieldValidations.requiresValidEmail(value.trim());
+        FieldValidations.requiresValidEmail(value);
 
         this.value = value.trim();
     }

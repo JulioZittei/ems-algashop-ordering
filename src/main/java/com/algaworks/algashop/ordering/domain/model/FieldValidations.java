@@ -29,6 +29,6 @@ public class FieldValidations {
 
     public static void requiresValidEmail(final String email, final String errorMessage) {
         requiresNonBlank(email, errorMessage);
-        if (!EmailValidator.getInstance().isValid(email)) throw new IllegalArgumentException(errorMessage);
+        if (!EmailValidator.getInstance().isValid(email.trim())) throw new IllegalArgumentException(errorMessage);
     }
 }
