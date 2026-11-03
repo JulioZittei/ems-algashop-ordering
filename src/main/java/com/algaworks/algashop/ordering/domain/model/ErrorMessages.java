@@ -40,11 +40,14 @@ public class ErrorMessages {
     public static final String ERROR_ORDER_HAS_NO_BILLING_INFO_CANNOT_BE_PLACED = "billing info in order '%s' cannot be null for the order to be placed.";
     public static final String ERROR_ORDER_HAS_NO_PAYMENT_METHOD_CANNOT_BE_PLACED = "expected delivery date in order '%s' cannot be null for the order to be placed.";
     public static final String ERROR_ORDER_DOES_NOT_CONTAIN_ORDER_ITEM = "order '%s' does not contain order item '%s'.";
+    public static final String ERROR_ORDER_NOT_FOUND = "order '%s' not found.";
     public static final String ERROR_PRODUCT_IS_OUT_OF_STOCK = "product '%s' is out of stock.";
+    public static final String ERROR_PRODUCT_NOT_FOUND = "product '%s' is not found.";
     public static final String ERROR_ORDER_CANNOT_BE_EDITED = "order '%s' on status '%s' cannot be edited.";
     public static final String ERROR_SHOPPING_CART_DOES_NOT_CONTAIN_ITEM = "shopping cart '%s' does not contain item '%s'";
     public static final String ERROR_SHOPPING_CART_DOES_NOT_CONTAIN_PRODUCT = "shopping cart '%s' does not contain product %s";
     public static final String ERROR_SHOPPING_CART_ITEM_INCOMPATIBLE_PRODUCT = "shopping cart '%s' cannot be updated, incompatible product '%s'";
+    public static final String ERROR_SHOPPING_CART_NOT_FOUND = "shopping cart '%s' not found.";
     public static final String ERROR_ORDER_NOT_BELONGS_TO_CUSTOMER = "order '%s' does not belong to the customer '%s'";
     public static final String ERROR_CAN_NOT_ADD_LOYALTY_POINTS_ORDER_IS_NOT_READY = "can not add loyalty points. order '%s' is not ready";
     public static final String ERROR_CUSTOMER_EMAIL_IS_IN_USE = "customer email '%s' is already in use.";

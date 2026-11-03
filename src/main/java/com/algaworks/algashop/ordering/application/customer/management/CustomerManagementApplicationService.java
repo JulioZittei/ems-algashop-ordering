@@ -1,7 +1,6 @@
 package com.algaworks.algashop.ordering.application.customer.management;
 
 import com.algaworks.algashop.ordering.application.ApplicationService;
-import com.algaworks.algashop.ordering.application.commons.AddressData;
 import com.algaworks.algashop.ordering.application.utility.Mapper;
 import com.algaworks.algashop.ordering.domain.model.commons.*;
 import com.algaworks.algashop.ordering.domain.model.customer.*;
@@ -79,6 +78,24 @@ public class CustomerManagementApplicationService {
         CustomerId customerId = new CustomerId(customerUUID);
         Customer customer = customers.ofId(customerId).orElseThrow(() -> new CustomerNotFoundException(customerId));
         return mapper.convert(customer, CustomerOutput.class);
+    }
+
+    @Transactional
+    public void archive(UUID rawCustomerId) {
+        CustomerId customerId = new CustomerId(rawCustomerId);
+        Customer customer = customers.ofId(new CustomerId(rawCustomerId))
+                .orElseThrow(()-> new CustomerNotFoundException(customerId));
+        customer.archive();
+        customers.add(customer);
+    }
+
+    @Transactional
+    public void changeEmail(UUID rawCustomerId, String newEmail) {
+        CustomerId customerId = new CustomerId(rawCustomerId);
+        Customer customer = customers.ofId(new CustomerId(rawCustomerId))
+                .orElseThrow(()-> new CustomerNotFoundException(customerId));
+        customerRegistrationService.changeEmail(customer, new Email(newEmail));
+        customers.add(customer);
     }
 
 }

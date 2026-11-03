@@ -146,11 +146,11 @@ public class Customer implements AggregateRoot<CustomerId> {
         return document;
     }
 
-    public boolean isPromotionNotificationsAllowed() {
+    public Boolean isPromotionNotificationsAllowed() {
         return promotionNotificationsAllowed;
     }
 
-    public boolean isArchived() {
+    public Boolean isArchived() {
         return archived;
     }
 

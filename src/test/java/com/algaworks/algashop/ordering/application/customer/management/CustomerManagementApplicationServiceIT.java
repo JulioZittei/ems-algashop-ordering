@@ -1,6 +1,8 @@
 package com.algaworks.algashop.ordering.application.customer.management;
 
 import com.algaworks.algashop.ordering.application.commons.AddressData;
+import com.algaworks.algashop.ordering.domain.model.customer.CustomerArchivedException;
+import com.algaworks.algashop.ordering.domain.model.customer.CustomerEmailIsInUseException;
 import com.algaworks.algashop.ordering.domain.model.customer.CustomerNotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -25,7 +27,7 @@ class CustomerManagementApplicationServiceIT {
         CustomerInput input = CustomerInput.builder()
                 .firstName("John")
                 .lastName("Doe")
-                .birthDate(LocalDate.of(1991, 7,5))
+                .birthDate(LocalDate.of(1991, 7, 5))
                 .document("255-08-0578")
                 .phone("478-256-2604")
                 .email("johndoe@email.com")
@@ -51,7 +53,7 @@ class CustomerManagementApplicationServiceIT {
         CustomerInput input = CustomerInput.builder()
                 .firstName("John")
                 .lastName("Doe")
-                .birthDate(LocalDate.of(1991, 7,5))
+                .birthDate(LocalDate.of(1991, 7, 5))
                 .document("255-08-0578")
                 .phone("478-256-2604")
                 .email("johndoe@email.com")
@@ -123,8 +125,118 @@ class CustomerManagementApplicationServiceIT {
     }
 
     @Test
+    void shouldArchiveCustomer() {
+        CustomerInput input = CustomerInputTestDataBuilder.aCustomer().build();
+        UUID customerId = customerManagementApplicationService.create(input);
+        Assertions.assertThat(customerId).isNotNull();
+
+        customerManagementApplicationService.archive(customerId);
+
+        CustomerOutput archivedCustomer = customerManagementApplicationService.findById(customerId);
+
+        Assertions.assertThat(archivedCustomer)
+                .isNotNull()
+                .extracting(
+                        CustomerOutput::getFirstName,
+                        CustomerOutput::getLastName,
+                        CustomerOutput::getPhone,
+                        CustomerOutput::getDocument,
+                        CustomerOutput::getBirthDate,
+                        CustomerOutput::getPromotionNotificationsAllowed
+                ).containsExactly(
+                        "Anonymous",
+                        "Anonymous",
+                        "000-000-0000",
+                        "000-00-0000",
+                        null,
+                        false
+                );
+
+        Assertions.assertThat(archivedCustomer.getEmail()).endsWith("@anonymous.com");
+        Assertions.assertThat(archivedCustomer.getArchivedAt()).isNotNull();
+        Assertions.assertThat(archivedCustomer.getArchived()).isTrue();
+
+        Assertions.assertThat(archivedCustomer.getAddress()).isNotNull();
+        Assertions.assertThat(archivedCustomer.getAddress().getNumber()).isNotNull().isEqualTo("Anonymized");
+        Assertions.assertThat(archivedCustomer.getAddress().getComplement()).isNull();
+    }
+
+    @Test
+    void shouldThrowCustomerNotFoundExceptionWhenArchivingNonExistingCustomer() {
+        UUID nonExistingId = UUID.randomUUID();
+
+        Assertions.assertThatExceptionOfType(CustomerNotFoundException.class)
+                .isThrownBy(() -> customerManagementApplicationService.archive(nonExistingId));
+    }
+
+    @Test
+    void shouldThrowCustomerArchivedExceptionWhenArchivingAlreadyArchivedCustomer() {
+        CustomerInput input = CustomerInputTestDataBuilder.aCustomer().build();
+        UUID customerId = customerManagementApplicationService.create(input);
+        Assertions.assertThat(customerId).isNotNull();
+
+        customerManagementApplicationService.archive(customerId);
+
+        Assertions.assertThatExceptionOfType(CustomerArchivedException.class)
+                .isThrownBy(() -> customerManagementApplicationService.archive(customerId));
+    }
+
+    @Test
+    void shouldChangeEmail() {
+        CustomerInput input = CustomerInputTestDataBuilder.aCustomer().build();
+        UUID customerId = customerManagementApplicationService.create(input);
+        String newEmail = "john.doe@newemail.com";
+
+        customerManagementApplicationService.changeEmail(customerId, newEmail);
+
+        CustomerOutput customerOutput = customerManagementApplicationService.findById(customerId);
+        Assertions.assertThat(customerOutput.getEmail()).isEqualTo(newEmail);
+    }
+
+    @Test
+    void shouldThrowCustomerNotFoundExceptionWhenChangingEmailOfNonExistingCustomer() {
+        UUID nonExistingId = UUID.randomUUID();
+
+        Assertions.assertThatExceptionOfType(CustomerNotFoundException.class)
+                .isThrownBy(() -> customerManagementApplicationService.changeEmail(nonExistingId, "new@email.com"));
+    }
+
+    @Test
+    void shouldThrowCustomerArchivedExceptionWhenChangingEmailOfArchivedCustomer() {
+        CustomerInput input = CustomerInputTestDataBuilder.aCustomer().build();
+        UUID customerId = customerManagementApplicationService.create(input);
+        customerManagementApplicationService.archive(customerId);
+
+        Assertions.assertThatExceptionOfType(CustomerArchivedException.class)
+                .isThrownBy(() -> customerManagementApplicationService.changeEmail(customerId, "new@email.com"));
+    }
+
+    @Test
+    void shouldThrowIllegalArgumentExceptionWhenChangingEmailToInvalidFormat() {
+        CustomerInput input = CustomerInputTestDataBuilder.aCustomer().build();
+        UUID customerId = customerManagementApplicationService.create(input);
+
+        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> customerManagementApplicationService.changeEmail(customerId, "email-invalido"));
+    }
+
+    @Test
+    void shouldThrowCustomerEmailIsInUseExceptionWhenChangingEmailToExistingEmail() {
+        CustomerInput firstInput = CustomerInputTestDataBuilder.aCustomer().build();
+        CustomerInput secondInput = CustomerInputTestDataBuilder.aCustomer()
+                .email("janedoe@email.com")
+                .build();
+        UUID firstCustomerId = customerManagementApplicationService.create(firstInput);
+        customerManagementApplicationService.create(secondInput);
+
+        Assertions.assertThatExceptionOfType(CustomerEmailIsInUseException.class)
+                .isThrownBy(() -> customerManagementApplicationService.changeEmail(firstCustomerId, secondInput.getEmail()));
+    }
+
+
+    @Test
     void shouldThrowNullPointerError_whenCustomerInputIsNull() {
-       assertThrows(NullPointerException.class, () -> customerManagementApplicationService.create(null));
+        assertThrows(NullPointerException.class, () -> customerManagementApplicationService.create(null));
     }
 
     @Test
