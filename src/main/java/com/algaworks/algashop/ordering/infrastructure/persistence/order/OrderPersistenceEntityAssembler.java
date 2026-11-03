@@ -5,7 +5,7 @@ import com.algaworks.algashop.ordering.domain.model.order.OrderItem;
 import com.algaworks.algashop.ordering.domain.model.commons.Address;
 import com.algaworks.algashop.ordering.domain.model.order.Billing;
 import com.algaworks.algashop.ordering.domain.model.order.Recipient;
-import com.algaworks.algashop.ordering.domain.model.order.Shipping;
+import com.algaworks.algashop.ordering.domain.model.order.shipping.Shipping;
 import com.algaworks.algashop.ordering.infrastructure.persistence.commons.AddressEmbeddable;
 import com.algaworks.algashop.ordering.infrastructure.persistence.customer.CustomerPersistenceEntity;
 import com.algaworks.algashop.ordering.infrastructure.persistence.customer.CustomerPersistenceEntityRepository;
@@ -59,6 +59,7 @@ public class OrderPersistenceEntityAssembler {
         orderPersistenceEntity.replaceItems(items);
         CustomerPersistenceEntity customerReference = customerPersistenceEntityRepository.getReferenceById(order.customerId().value());
         orderPersistenceEntity.setCustomer(customerReference);
+        orderPersistenceEntity.addEvents(order.domainEvents());
         return orderPersistenceEntity;
     }
 

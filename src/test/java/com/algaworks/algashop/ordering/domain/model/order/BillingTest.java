@@ -1,6 +1,7 @@
 package com.algaworks.algashop.ordering.domain.model.order;
 
 import com.algaworks.algashop.ordering.domain.model.commons.*;
+import com.algaworks.algashop.ordering.domain.model.order.shipping.Shipping;
 import org.junit.jupiter.api.Test;
 
 import static com.algaworks.algashop.ordering.domain.model.ErrorMessages.*;

@@ -2,6 +2,7 @@ package com.algaworks.algashop.ordering.domain.model.order;
 
 import com.algaworks.algashop.ordering.domain.model.commons.Money;
 import com.algaworks.algashop.ordering.domain.model.commons.Quantity;
+import com.algaworks.algashop.ordering.domain.model.order.shipping.Shipping;
 import com.algaworks.algashop.ordering.domain.model.product.ProductTestDataBuilder;
 import com.algaworks.algashop.ordering.domain.model.shoppingcart.ShoppingCart;
 import com.algaworks.algashop.ordering.domain.model.shoppingcart.ShoppingCartCantProceedToCheckoutException;
@@ -89,9 +90,6 @@ class CheckoutServiceTest {
         ShoppingCart shoppingCart = ShoppingCart.startShopping(ShoppingCartTestDataBuilder.aShoppingCart().customerId);
         Product productInStock = ProductTestDataBuilder.aProduct().build();
         shoppingCart.addItem(productInStock, new Quantity(2));
-
-        Money initialTotalAmount = shoppingCart.totalAmount();
-        Quantity initialTotalItems = shoppingCart.totalItems();
 
         Product productAlt = ProductTestDataBuilder.aProduct().id(new ProductId()).build();
         shoppingCart.addItem(productAlt, new Quantity(1));

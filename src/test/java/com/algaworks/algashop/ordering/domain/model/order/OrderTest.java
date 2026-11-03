@@ -1,6 +1,7 @@
 package com.algaworks.algashop.ordering.domain.model.order;
 
 import com.algaworks.algashop.ordering.domain.model.commons.*;
+import com.algaworks.algashop.ordering.domain.model.order.shipping.Shipping;
 import com.algaworks.algashop.ordering.domain.model.product.Product;
 import com.algaworks.algashop.ordering.domain.model.customer.CustomerId;
 import com.algaworks.algashop.ordering.domain.model.product.ProductOutOfStockException;
@@ -319,12 +320,15 @@ class OrderTest {
                 .cost(newShippingCost)
                 .build();
 
+        Money expectedTotalAmount = order.totalAmount().add(newShipping.cost());
+
         order.changeShipping(newShipping);
 
         Assertions.assertThat(order.shipping()).isEqualTo(newShipping);
         Assertions.assertThat(order.shipping().cost()).isEqualTo(newShippingCost);
         Assertions.assertThat(order.shipping().expectedDate()).isEqualTo(newExpectedDeliveryDate);
         Assertions.assertThat(order.totalAmount()).isNotEqualTo(oldAmount);
+        Assertions.assertThat(order.totalAmount()).isEqualTo(expectedTotalAmount);
     }
 
     @Test

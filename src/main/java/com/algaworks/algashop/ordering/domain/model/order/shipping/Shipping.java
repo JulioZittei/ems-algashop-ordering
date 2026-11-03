@@ -1,7 +1,8 @@
-package com.algaworks.algashop.ordering.domain.model.order;
+package com.algaworks.algashop.ordering.domain.model.order.shipping;
 
 import com.algaworks.algashop.ordering.domain.model.commons.Address;
 import com.algaworks.algashop.ordering.domain.model.commons.Money;
+import com.algaworks.algashop.ordering.domain.model.order.Recipient;
 import lombok.Builder;
 
 import java.time.LocalDate;

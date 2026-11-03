@@ -1,8 +1,6 @@
-package com.algaworks.algashop.ordering.domain.model.shoppingcart;
+package com.algaworks.algashop.ordering.domain.model.order.shipping;
 
 import com.algaworks.algashop.ordering.domain.model.commons.ZipCode;
-import com.algaworks.algashop.ordering.domain.model.order.shipping.OriginAddressService;
-import com.algaworks.algashop.ordering.domain.model.order.shipping.ShippingCostService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
